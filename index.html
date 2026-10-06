@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Trust Bank – Credit Approval Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f2a43;--bg:#f4f7f9;--card:#fff;--line:#d5dee6;--muted:#556a7d;--teal:#0e7c86;--tealbg:#e3f3f4;--amber:#a15c00;--amberbg:#fff1d9;--red:#b3261e;--redbg:#fde8e6;--blue:#2f5d8a;--bluebg:#e6eef6;--ok:#0b7a4b;--okbg:#e0f4ea;--serif:'Fraunces',Georgia,serif;--sans:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif}
+:root[data-theme=dark]{--ink:#e8f0f6;--bg:#0c1822;--card:#132635;--line:#27404f;--muted:#9bb0c0;--tealbg:#123a40;--amber:#f0b45a;--amberbg:#3a2c12;--red:#ff8a80;--redbg:#3d1c1a;--blue:#8db8e3;--bluebg:#16293c;--ok:#5fd9a1;--okbg:#10372a;--teal:#4cc2cc}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;font:17px/1.55 var(--sans);background:var(--bg);color:var(--ink)}
+h1,h2,h3{font-family:var(--serif);line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem)}h2{font-size:1.9rem}h3{font-size:1.15rem}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.demo{background:#0f2a43;color:#fff;text-align:center;font-size:.9rem;padding:8px 16px}
+header{background:var(--card);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.logo{font-family:var(--serif);font-weight:700;font-size:1.25rem}
+nav{display:flex;gap:18px;align-items:center}nav a{text-decoration:none;color:var(--ink);font-weight:600}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:12px 22px;background:var(--teal);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+:root[data-theme=dark] button,:root[data-theme=dark] .btn{color:#06222a}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:6px 12px}
+.hero{padding:72px 0 56px}
+.hero p{max-width:34em;font-size:1.2rem;color:var(--muted);margin:0 0 26px}
+section{padding:48px 0}
+.steps{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.steps .card p{margin:0;color:var(--muted)}
+form .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+label{display:block;font-weight:600;margin-bottom:4px}
+input,select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+input[aria-invalid=true],select[aria-invalid=true]{border-color:var(--red)}
+.err{color:var(--red);font-size:.9rem;min-height:1.2em}
+form .btn-row{margin-top:10px;display:flex;gap:12px;flex-wrap:wrap}
+#result{display:none}
+.res{display:grid;gap:24px;grid-template-columns:minmax(0,260px) 1fr;align-items:center}
+@media(max-width:700px){.res{grid-template-columns:1fr}}
+.gauge{text-align:center}
+.gauge svg{width:100%;max-width:260px}
+.gauge .track{stroke:var(--line)}
+.gauge .bar{transition:stroke-dashoffset .9s ease,stroke .3s}
+.gauge .num{font:700 34px var(--serif);fill:var(--ink)}
+.gauge .lbl{font-size:12px;fill:var(--muted)}
+.badge{display:inline-block;padding:4px 14px;border-radius:99px;font-weight:600;margin-bottom:10px}
+.s-approved{background:var(--okbg);color:var(--ok)}.s-cond{background:var(--amberbg);color:var(--amber)}.s-review{background:var(--bluebg);color:var(--blue)}.s-declined{background:var(--redbg);color:var(--red)}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin:14px 0}
+.stats div{background:var(--bg);border-radius:8px;padding:10px 12px}
+.stats b{display:block;font-size:1.25rem}.stats span{color:var(--muted);font-size:.85rem}
+.reasons{margin:8px 0 0;padding-left:20px}
+.whatif{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.whatif .row{display:grid;gap:6px 20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+input[type=range]{padding:0;accent-color:var(--teal)}
+details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+details p{margin:10px 0 0;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="demo" role="note"><strong>DEMO ONLY</strong> – This is a fictional site. No real applications are processed and no data is stored or sent anywhere.</div>
+
+<header>
+  <div class="wrap">
+    <span class="logo">Meridian Trust Bank</span>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a><a href="#apply">Apply</a><a href="#faq">FAQ</a>
+      <button class="ghost" id="theme" type="button" aria-label="Toggle dark mode">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap hero">
+  <h1>Find out if you qualify for a loan in under a minute.</h1>
+  <p>Enter a few details and get an instant, mock credit decision with the reasons behind it. Nothing you type leaves this page.</p>
+  <a class="btn" href="#apply">Check your eligibility</a>
+</div>
+
+<section id="how"><div class="wrap">
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="card"><h3>1. Apply</h3><p>Fill in your income, debts, credit score and the amount you want to borrow.</p></div>
+    <div class="card"><h3>2. Instant assessment</h3><p>The page works out your debt-to-income ratio and an approval score in your browser.</p></div>
+    <div class="card"><h3>3. Decision</h3><p>See the outcome, your estimated monthly payment, and try other amounts and terms.</p></div>
+  </div>
+</div></section>
+
+<section id="apply"><div class="wrap">
+  <h2>Loan application</h2>
+  <div class="card">
+    <form id="form" novalidate>
+      <div class="grid">
+        <div><label for="name">Full name</label><input id="name" autocomplete="off"><div class="err" id="e-name" aria-live="polite"></div></div>
+        <div><label for="email">Email</label><input id="email" type="email" autocomplete="off"><div class="err" id="e-email" aria-live="polite"></div></div>
+        <div><label for="age">Age</label><input id="age" type="number" min="18" max="100"><div class="err" id="e-age" aria-live="polite"></div></div>
+        <div><label for="emp">Employment status</label>
+          <select id="emp"><option value="">Select…</option><option value="employed">Employed</option><option value="self">Self-employed</option><option value="retired">Retired</option><option value="unemployed">Unemployed</option></select>
+          <div class="err" id="e-emp" aria-live="polite"></div></div>
+        <div><label for="income">Monthly gross income ($)</label><input id="income" type="number" min="0"><div class="err" id="e-income" aria-live="polite"></div></div>
+        <div><label for="debt">Monthly existing debt payments ($)</label><input id="debt" type="number" min="0"><div class="err" id="e-debt" aria-live="polite"></div></div>
+        <div><label for="score">Credit score (300–850)</label><input id="score" type="number" min="300" max="850"><div class="err" id="e-score" aria-live="polite"></div></div>
+        <div><label for="amount">Requested amount ($)</label><input id="amount" type="number" min="1000" max="100000"><div class="err" id="e-amount" aria-live="polite"></div></div>
+        <div><label for="tenure">Tenure</label>
+          <select id="tenure"><option value="12">12 months</option><option value="24">24 months</option><option value="36" selected>36 months</option><option value="48">48 months</option><option value="60">60 months</option></select></div>
+        <div><label for="purpose">Loan purpose</label>
+          <select id="purpose"><option value="">Select…</option><option>Debt consolidation</option><option>Home improvement</option><option>Education</option><option>Car purchase</option><option>Medical expenses</option><option>Other</option></select>
+          <div class="err" id="e-purpose" aria-live="polite"></div></div>
+      </div>
+      <div class="btn-row"><button type="submit">Get my decision</button><button type="button" class="ghost" id="sample">Fill sample data</button></div>
+    </form>
+  </div>
+
+  <div class="card" id="result" tabindex="-1" aria-live="polite" style="margin-top:20px">
+    <div class="res">
+      <div class="gauge">
+        <svg viewBox="0 0 200 125" role="img" aria-label="Approval score gauge">
+          <path class="track" d="M20 105 A80 80 0 0 1 180 105" fill="none" stroke-width="16" stroke-linecap="round"/>
+          <path class="bar" id="bar" d="M20 105 A80 80 0 0 1 180 105" fill="none" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <text class="num" id="gnum" x="100" y="92" text-anchor="middle">0</text>
+          <text class="lbl" x="100" y="115" text-anchor="middle">Approval score (higher is safer)</text>
+        </svg>
+      </div>
+      <div>
+        <span class="badge" id="badge"></span>
+        <h3 id="headline"></h3>
+        <div class="stats">
+          <div><b id="r-dti"></b><span>Debt-to-income</span></div>
+          <div><b id="r-pmt"></b><span>Est. monthly payment</span></div>
+          <div><b id="r-rate"></b><span>Interest rate (APR)</span></div>
+        </div>
+        <ul class="reasons" id="reasons"></ul>
+      </div>
+    </div>
+    <div class="whatif">
+      <h3>What if you borrowed a different amount?</h3>
+      <div class="row">
+        <div><label for="w-amount">Amount: <span id="w-amount-v"></span></label><input type="range" id="w-amount" min="1000" max="100000" step="500"></div>
+        <div><label for="w-tenure">Tenure: <span id="w-tenure-v"></span> months</label><input type="range" id="w-tenure" min="12" max="60" step="12"></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <h2>Frequently asked questions</h2>
+  <details><summary>Is this a real loan application?</summary><p>No. Meridian Trust Bank is fictional and this site is a demonstration. No applications are processed.</p></details>
+  <details><summary>Is my information saved?</summary><p>No. Everything is calculated in your browser. Nothing is stored or sent over the network.</p></details>
+  <details><summary>How is the decision made?</summary><p>The score combines credit score (40 points), debt-to-income ratio (30), employment (15), loan size versus annual income (10) and age (5). Payments are estimated at a fixed 8% APR.</p></details>
+  <details><summary>What is debt-to-income (DTI)?</summary><p>Your monthly debt payments, including the new loan, divided by your monthly gross income. Lower is better; this demo likes it under 36%.</p></details>
+</div></section>
+</main>
+
+<footer><div class="wrap">© Meridian Trust Bank (fictional). For demonstration and portfolio use only. Not financial advice.</div></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+const BASE_APR = 8;
+
+// Monthly payment for a loan, and the reverse (max principal for a payment)
+const pmt = (P, apr, n) => { const r = apr / 1200; return r ? P * r / (1 - Math.pow(1 + r, -n)) : P / n; };
+const principal = (m, apr, n) => { const r = apr / 1200; return r ? m * (1 - Math.pow(1 + r, -n)) / r : m * n; };
+
+// ---- Mock credit decision ----
+function evaluate(d) {
+  const payment = pmt(d.amount, BASE_APR, d.tenure);
+  const dti = d.income > 0 ? (d.debt + payment) / d.income : 9.99;
+  const empPts = { employed: 15, self: 10, retired: 10, unemployed: 0 }[d.emp];
+  const parts = {
+    credit: clamp((d.score - 300) / 550) * 40,
+    dti: 30 * clamp(1 - dti / 0.6),
+    emp: empPts,
+    size: d.income > 0 ? 10 * clamp(1 - (d.amount / (d.income * 12) - 0.25) / 1.25) : 0,
+    age: d.age >= 21 && d.age <= 65 ? 5 : 3
+  };
+  const score = Math.round(Object.values(parts).reduce((a, b) => a + b, 0));
+  const reasons = [];
+  reasons.push(d.score >= 740 ? 'Your credit score is excellent.' : d.score >= 670 ? 'Your credit score is good.' : d.score >= 580 ? 'Your credit score is fair and limits your options.' : 'Your credit score is low, which weighs heavily on the decision.');
+  reasons.push('Including this loan, ' + Math.round(dti * 100) + '% of your monthly income would go to debt payments' + (dti <= 0.36 ? ', which is healthy.' : dti <= 0.43 ? ', which is on the high side.' : ', which is above our comfort limit.'));
+  if (d.emp === 'unemployed') reasons.push('Without current employment, repayment is harder to verify.');
+  else if (d.amount > d.income * 12 * 0.75) reasons.push('The amount requested is large compared with your annual income.');
+  else reasons.push('Your employment and income support the amount requested.');
+
+  let status, headline, rate = BASE_APR, offer = null;
+  if (d.income <= 0 || dti > 0.5 || (d.emp === 'unemployed' && d.income <= 0)) {
+    status = 'declined'; headline = 'We can’t approve this request.';
+    if (d.income <= 0) reasons[1] = 'We need verifiable income to repay a loan.';
+  } else if (score >= 70 && dti <= 0.36) {
+    status = 'approved'; headline = 'Approved – you qualify for the full amount.';
+    rate = score >= 85 ? 6.5 : BASE_APR;
+  } else if (score >= 55 && dti <= 0.43) {
+    status = 'cond'; rate = BASE_APR + 2.5;
+    const maxPay = 0.36 * d.income - d.debt;
+    const maxAmt = Math.floor(principal(Math.max(maxPay, 0), rate, d.tenure) / 500) * 500;
+    if (dti > 0.36 && maxAmt >= 1000 && maxAmt < d.amount) {
+      offer = maxAmt; headline = 'Conditionally approved – up to ' + money(maxAmt) + ' at ' + rate.toFixed(1) + '%.';
+      reasons.push('Lowering the amount to ' + money(maxAmt) + ' brings your DTI to about 36%.');
+    } else headline = 'Conditionally approved at a higher rate of ' + rate.toFixed(1) + '%.';
+  } else if (score >= 40) {
+    status = 'review'; headline = 'Referred for manual review.'; rate = BASE_APR + 4;
+    reasons.push('A loan officer would look at your application and may ask for documents.');
+  } else {
+    status = 'declined'; headline = 'We can’t approve this request.';
+  }
+  return { status, headline, score, dti, payment, rate, reasons, offer };
+}
+
+// ---- Rendering ----
+const labels = { approved: 'Approved', cond: 'Conditionally approved', review: 'Manual review', declined: 'Declined' };
+const colors = { approved: 'var(--ok)', cond: 'var(--amber)', review: 'var(--blue)', declined: 'var(--red)' };
+let current = null;
+
+function render() {
+  const r = evaluate(current);
+  $('badge').textContent = labels[r.status];
+  $('badge').className = 'badge s-' + r.status;
+  $('headline').textContent = r.headline;
+  $('r-dti').textContent = r.dti > 5 ? 'n/a' : (r.dti * 100).toFixed(0) + '%';
+  $('r-pmt').textContent = money(r.payment);
+  $('r-rate').textContent = r.status === 'declined' ? '–' : r.rate.toFixed(1) + '%';
+  $('gnum').textContent = r.score;
+  $('bar').style.stroke = colors[r.status];
+  $('bar').style.strokeDashoffset = 100 - r.score;
+  $('reasons').innerHTML = '';
+  r.reasons.forEach(t => { const li = document.createElement('li'); li.textContent = t; $('reasons').appendChild(li); });
+  $('w-amount').value = current.amount; $('w-tenure').value = current.tenure;
+  $('w-amount-v').textContent = money(current.amount); $('w-tenure-v').textContent = current.tenure;
+}
+
+// ---- Form validation ----
+function readForm() {
+  const v = id => $(id).value.trim();
+  const d = { name: v('name'), email: v('email'), age: +v('age'), emp: v('emp'), income: v('income') === '' ? NaN : +v('income'),
+    debt: v('debt') === '' ? NaN : +v('debt'), score: +v('score'), amount: +v('amount'), tenure: +v('tenure'), purpose: v('purpose') };
+  const e = {};
+  if (d.name.length < 2) e.name = 'Enter your full name.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) e.email = 'Enter a valid email, like name@example.com.';
+  if (!(d.age >= 18 && d.age <= 100)) e.age = 'You must be between 18 and 100.';
+  if (!d.emp) e.emp = 'Choose your employment status.';
+  if (!(d.income >= 0)) e.income = 'Enter your monthly income (0 or more).';
+  if (!(d.debt >= 0)) e.debt = 'Enter your monthly debt payments (0 if none).';
+  if (!(d.score >= 300 && d.score <= 850)) e.score = 'Credit score must be between 300 and 850.';
+  if (!(d.amount >= 1000 && d.amount <= 100000)) e.amount = 'Amount must be between $1,000 and $100,000.';
+  if (!d.purpose) e.purpose = 'Choose a loan purpose.';
+  ['name', 'email', 'age', 'emp', 'income', 'debt', 'score', 'amount', 'purpose'].forEach(k => {
+    $('e-' + k).textContent = e[k] || ''; $(k).setAttribute('aria-invalid', e[k] ? 'true' : 'false');
+  });
+  return { d, ok: !Object.keys(e).length, first: Object.keys(e)[0] };
+}
+
+$('form').addEventListener('submit', ev => {
+  ev.preventDefault();
+  const { d, ok, first } = readForm();
+  if (!ok) { $(first).focus(); return; }
+  current = d;
+  $('result').style.display = 'block';
+  $('bar').style.strokeDashoffset = 100;
+  requestAnimationFrame(() => { render(); $('result').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('result').focus({ preventScroll: true }); });
+});
+
+// What-if sliders re-run the decision live
+$('w-amount').addEventListener('input', e => { current.amount = +e.target.value; $('amount').value = current.amount; render(); });
+$('w-tenure').addEventListener('input', e => { current.tenure = +e.target.value; $('tenure').value = current.tenure; render(); });
+
+$('sample').addEventListener('click', () => {
+  const s = { name: 'Alex Tan', email: 'alex@example.com', age: 34, emp: 'employed', income: 5500, debt: 600, score: 710, amount: 20000, tenure: 36, purpose: 'Home improvement' };
+  Object.keys(s).forEach(k => $(k).value = s[k]);
+});
+
+// Light / dark toggle (no storage: resets on reload)
+const root = document.documentElement;
+if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+const syncTheme = () => $('theme').textContent = root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode';
+$('theme').addEventListener('click', () => { root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'; syncTheme(); });
+syncTheme();
+</script>
+</body>
+</html>
